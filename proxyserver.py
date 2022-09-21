@@ -27,7 +27,13 @@ def main():
             print("Connected by", addr)
 
             # recieve data, wait a bit, then send it back
-            full_data = conn.recv(BUFFER_SIZE)
+            full_data = b""
+            while True:
+                data = conn.recv(BUFFER_SIZE)
+                if not data:
+                    break
+                full_data += data
+            print(full_data)
             time.sleep(0.5)
             googles_response = get_google_response(full_data)
             conn.sendall(googles_response)
@@ -53,11 +59,18 @@ def main():
 
 def get_google_response(payload):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect(('www.google.com', 80))
+        GOOGLE_IP = socket.gethostbyname("www.google.com")
+        s.connect((GOOGLE_IP, 80))
         s.sendall(payload)
         s.shutdown(socket.SHUT_WR)
-        data = s.recv(BUFFER_SIZE)
-        return data
+        full_data = b""
+        while True:
+            data = s.recv(BUFFER_SIZE)
+            if not data:
+                break
+            full_data += data
+        print(full_data)
+        return full_data
 
 
 if __name__ == "__main__":

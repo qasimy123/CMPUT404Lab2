@@ -48,7 +48,7 @@ def main():
         # define address info, payload, and buffer size
         host = '127.0.0.1'
         port = 8001
-        payload = f'GET / HTTP/1.0\r\nHost: {host}\r\n\r\n'
+        payload = f'GET / HTTP/1.0\r\nHost: www.google.com\r\n\r\n'
         buffer_size = 4096
 
         # make the socket, get the ip, and connect
@@ -68,7 +68,7 @@ def main():
             if not data:
                 break
             full_data += data
-        print("Client")
+        print("Client", full_data)
     except Exception as e:
         print(e)
     finally:
