@@ -3,6 +3,7 @@ import os
 import socket
 import sys
 import time
+import multiprocessing
 
 # define address & buffer size
 HOST = ""
@@ -24,37 +25,22 @@ def main():
         # # continuously listen for connections
         while True:
             conn, addr = s.accept()
-            print("Connected by", addr)
-
-            # recieve data, wait a bit, then send it back
-            full_data = b""
-            while True:
-                data = conn.recv(BUFFER_SIZE)
-                if not data:
-                    break
-                full_data += data
-            print(full_data)
-            time.sleep(0.5)
-            googles_response = get_google_response(full_data)
-            conn.sendall(googles_response)
+            multiprocessing.Process(
+                target=handle_request, args=(conn, addr)).start()
             conn.close()
-            
-        # Rewrite the code above to fork a process every time a connection is received.
-        
-        # while True:
-        #     pid = os.fork()
-        #     conn, addr = s.accept()
-        #     print("Connected by", addr)
-        #     # recieve data, wait a bit, then send it back
-        #     full_data = conn.recv(BUFFER_SIZE)
-        #     time.sleep(0.5)
-        #     googles_response = get_google_response(full_data)
-        #     conn.sendall(googles_response)
-        #     conn.close()
-        #     if pid == 0:
-        #         exit(0)
-        #     else:
-        #         os.waitpid(pid, 0)
+
+
+def handle_request(conn, addr):
+    full_data = b""
+    while True:
+        data = conn.recv(BUFFER_SIZE)
+        if not data:
+            break
+        full_data += data
+    print(full_data.decode())
+    time.sleep(0.5)
+    googles_response = get_google_response(full_data)
+    conn.sendall(googles_response)
 
 
 def get_google_response(payload):
@@ -69,7 +55,6 @@ def get_google_response(payload):
             if not data:
                 break
             full_data += data
-        print(full_data)
         return full_data
 
 
