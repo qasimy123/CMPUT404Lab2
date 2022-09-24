@@ -2,6 +2,11 @@
 import socket
 import time
 import multiprocessing
+
+'''
+Credit: Code from CMPUT404 Lab Instructors 
+'''
+
 #define address & buffer size
 HOST = ""
 PORT = 8001
