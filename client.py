@@ -2,6 +2,11 @@
 import socket
 import sys
 
+'''
+Credit: Code from CMPUT404 Lab Instructors 
+
+'''
+
 # create a tcp socket
 
 
